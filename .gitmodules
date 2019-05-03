@@ -1,0 +1,3 @@
+[submodule "clique-top"]
+	path = clique-top
+	url = https://github.com/nebneuron/clique-top.git
