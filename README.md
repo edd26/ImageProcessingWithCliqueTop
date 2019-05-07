@@ -14,3 +14,5 @@ This script loads symetric matrices of random, geometric and shuffeled form, and
 
 # Reference
 [1] T. Kaczynski, K. Mischaikow, and M. Mrozek, Computational homology. Pages:268-269
+[2] C. Giusti, V. Itskov, C. Curto, CliqueTop library. Address: https://github.com/nebneuron/clique-top
+[3] Matt J., mat2tiles library. Address: https://uk.mathworks.com/matlabcentral/fileexchange/35085-mat2tiles-divide-array-into-equal-sized-sub-arrays
