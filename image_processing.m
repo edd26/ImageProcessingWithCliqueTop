@@ -13,7 +13,6 @@ gray_image = rgb2gray(candle_image);
 % Normailzie to the maximal value
 gray_image = im2double(gray_image);
 
-
 %% Reduce the size of the image
 % Divide the image into non-overlapping squares. Then take the average
 % value of the pixel in the square and let the square be represened by its
@@ -44,7 +43,6 @@ end
 
 imshow(mat2gray(averaged_image))
 
-
 %% Threshold image
 threshold_lower = 0.4;
 threshold_upper = 0.6;
@@ -67,25 +65,12 @@ indices = indices/max(max(indices));
 
 % Compute distances
 distance_matrix = pdist2(indices, indices,'euclidean');
-
-
-%% Image fft
-F = fft2(thresholded_image);
-F2 = log(abs(F));
-imshow(F2);%,[-1 5],'InitialMagnification','fit');
-colormap(jet); 
-colorbar
-[row,col] = find(F2<1);
-
-A = [row,col];
-% Compute distances
-distance_matrix = pdist2(A, A,'euclidean');
 %% Compute the clique topology of the distance matrix of the image
 % Reduce the number of elements in distance matrix to speed up computations
-ending = 48;
+ending = 30;
 
 [bettiCurves, edgeDensities, persistenceIntervals,...
-    unboundedIntervals] =  compute_clique_topology(distance_matrix(1:ending, 1:ending), 'Algorithm', 'split');
+    unboundedIntervals] =  compute_clique_topology(-distance_matrix(1:ending, 1:ending), 'Algorithm', 'split');
 
 %% Print the Betti curves
 
@@ -94,7 +79,7 @@ hold on
 plot(edgeDensities, bettiCurves(:,2))
 plot(edgeDensities, bettiCurves(:,3))
 
-title("Betti curves for image")
+title("Betti curves for geometric matrix")
 legend("\beta_0","\beta_1","\beta_2")
 hold off
 
