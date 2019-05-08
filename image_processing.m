@@ -34,23 +34,31 @@ reshaped_image = imresize(gray_image, [new_size_vert new_size_hor]);
 set_of_tiles = mat2tiles(reshaped_image, tile_size, tile_size);
 
 % Get the average value in each square
-averaged_image = zeros(number_of_vertical_tiles);
+mean_image = zeros(number_of_vertical_tiles);
+std_image = zeros(number_of_vertical_tiles);
+skew_image = zeros(number_of_vertical_tiles);
+kurt_image = zeros(number_of_vertical_tiles);
 
 for k = 1:number_of_vertical_tiles
     for m=1:number_of_vertical_tiles
-        averaged_image(k,m) = mean(mean(cell2mat(set_of_tiles(k,m))));
+        tile_set = cell2mat(set_of_tiles(k,m));
+        
+        mean_image(k,m) = mean2(tile_set);
+        std_image(k,m) = std2(tile_set);
+        skew_image(k,m) = skewness(tile_set,1,'all');
+        kurt_image(k,m) = kurtosis(tile_set,1,'all');
     end
 end
 
-imshow(mat2gray(averaged_image))
+imshow(mat2gray(skew_image))
 
 
 %% Threshold image
 threshold_lower = 0.4;
 threshold_upper = 0.6;
 % Get the values of the image which are lower/higher than the thresholds
-indices_lower = averaged_image > threshold_lower;
-indices_upper = averaged_image < threshold_upper;
+indices_lower = mean_image > threshold_lower;
+indices_upper = mean_image < threshold_upper;
 
 % Get the values which are in between the thresholds
 thresholded_image = indices_lower + indices_upper;
@@ -82,10 +90,10 @@ A = [row,col];
 distance_matrix = pdist2(A, A,'euclidean');
 %% Compute the clique topology of the distance matrix of the image
 % Reduce the number of elements in distance matrix to speed up computations
-ending = 48;
+ending = 60;
 
 [bettiCurves, edgeDensities, persistenceIntervals,...
-    unboundedIntervals] =  compute_clique_topology(distance_matrix(1:ending, 1:ending), 'Algorithm', 'split');
+    unboundedIntervals] =  compute_clique_topology(-distance_matrix(1:ending, 1:ending), 'Algorithm', 'split');
 
 %% Print the Betti curves
 
