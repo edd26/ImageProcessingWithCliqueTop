@@ -13,7 +13,7 @@ vid_width = video_file.Width;
 vid_height = video_file.Height;
 vid_frames_cont = video_file.Duration*video_file.FrameRate;
 %% Create set of evenly distributed indicies
-number_of_points = 30;
+number_of_points = 14;
 
 horizontal_indicies = 1:floor(vid_width/number_of_points):vid_width;
 vertical_indicies = 1:floor(vid_height/number_of_points):vid_height;
@@ -39,7 +39,7 @@ while hasFrame(video_file)
 
     extracted_pixels(:,:,frame_number) = gray_frame(vertical_indicies,...
                                                     horizontal_indicies);
-    imshow(gray_frame(1:9:end,1:9:end))                                            
+%     imshow(gray_frame(1:9:end,1:9:end))                                            
     frame_number = frame_number + 1;
 end
 
@@ -124,7 +124,7 @@ for row=1:number_of_signals
 %         [max_val_ji, middle_ji] = max(ccg_ji);
         middle_ij = floor(length(ccg_ij)/2);
 %         middle_ji = middle_ij;
-        tau_max = 25; % this is given in frames
+        tau_max = 2*25; % this is given in frames
 
         A = sum(ccg_ij(middle_ij:middle_ij+tau_max));
         B = sum(ccg_ij(middle_ij-tau_max:middle_ij));
