@@ -20,7 +20,7 @@ gray_image = im2double(gray_image);
 % average.
 
 % Tile is a matrix in which values are averaged
-tile_size = 6;
+tile_size = 4;
 number_of_vertical_tiles = ceil(size(gray_image,1)/tile_size);
 number_of_horizontal_tiles = ceil(size(gray_image,2)/tile_size);
 
@@ -50,7 +50,7 @@ for k = 1:number_of_vertical_tiles
     end
 end
 
-imshow(mat2gray(skew_image))
+imshow(mat2gray(std_image))
 
 %% Distances
 % Treat all the statistic measures of an image as set of coordinates.
@@ -61,30 +61,51 @@ coordinate_matrix(:,:,2) = std_image;
 coordinate_matrix(:,:,3) = skew_image;
 coordinate_matrix(:,:,4) = kurt_image;
 
-distance_matrix = zeros(number_of_vertical_tiles, number_of_vertical_tiles, number_of_vertical_tiles);
+%% Betti curve field
+distance_matrix1 = zeros(number_of_vertical_tiles, number_of_vertical_tiles, number_of_vertical_tiles);
 % What is the distance 
 for k =1:number_of_vertical_tiles
-    distance_matrix(:,:,k) = pdist2(squeeze(coordinate_matrix(k,:,:)), ...
+    distance_matrix1(:,:,k) = pdist2(squeeze(coordinate_matrix(k,:,:)), ...
         squeeze(coordinate_matrix(k,:,:)),'euclidean');
 end
 
-%% Betti curve field
 bettiCurves_set = zeros(700, 3, number_of_vertical_tiles);
 edgeDensities_set = zeros(700, 1, number_of_vertical_tiles);
 % edgeDensities = zeros(number_of_vertical_tiles, number_of_vertical_tiles, number_of_vertical_tiles);
-m = 40;
+m = 72;
 
 for k =1:number_of_vertical_tiles
     [bettiCurves, edgeDensities ] = ...
-        compute_clique_topology(-distance_matrix(1:m,1:m,k), 'Algorithm', 'split');
+        compute_clique_topology(-distance_matrix1(1:m,1:m,k), 'Algorithm', 'split');
     bettiCurves_set(1:length(bettiCurves),:,k) = bettiCurves(:,:);
     edgeDensities_set(1:length(bettiCurves),:,k) = edgeDensities(:,:);
     fprintf("%d\n",k)
 end
 
+%% Betti curve field
+distance_matrix2 = zeros(number_of_vertical_tiles, number_of_vertical_tiles, number_of_vertical_tiles);
+% What is the distance 
+for k =1:number_of_vertical_tiles
+    distance_matrix2(:,:,k) = pdist2(squeeze(coordinate_matrix(:,k,:)), ...
+        squeeze(coordinate_matrix(k,:,:)),'euclidean');
+end
+
+bettiCurves_set2 = zeros(700, 3, number_of_vertical_tiles);
+edgeDensities_set2 = zeros(700, 1, number_of_vertical_tiles);
+% edgeDensities = zeros(number_of_vertical_tiles, number_of_vertical_tiles, number_of_vertical_tiles);
+m = 72;
+
+for k =1:number_of_vertical_tiles
+    [bettiCurves, edgeDensities ] = ...
+        compute_clique_topology(-distance_matrix2(1:m,1:m,k), 'Algorithm', 'split');
+    bettiCurves_set2(1:length(bettiCurves),:,k) = bettiCurves(:,:);
+    edgeDensities_set2(1:length(bettiCurves),:,k) = edgeDensities(:,:);
+    fprintf("%d\n",k)
+end
+
 %%
-X=reshape(bettiCurves_set(:,1,:),[],number_of_vertical_tiles);   %%  X: 2D matrix 258x8 
-[xx yy] = meshgrid(1:number_of_vertical_tiles,1:length(bettiCurves_set));
+X=reshape(bettiCurves_set2(:,1,:),[],number_of_vertical_tiles);   %%  X: 2D matrix 258x8 
+[xx yy] = meshgrid(1:number_of_vertical_tiles,1:length(bettiCurves_set2));
 plot3(xx,yy,X,'-');
 
 %% Threshold image
