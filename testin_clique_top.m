@@ -12,17 +12,19 @@ end
 %% Compute the clique topology
 % The bigger the matrix, the longer the computations (45 mins for 88x88
 % matrix)
-ending = 40;
+ending = 66;
 
 [bettiCurves, edgeDensities, persistenceIntervals,...
-    unboundedIntervals] =  compute_clique_topology(geometric_matrix(1:ending, 1:ending), 'Algorithm', 'split');
+        unboundedIntervals] =  compute_clique_topology( ...
+            geometric_matrix(1:ending, 1:ending), 'Algorithm', 'combine');
 
 %% Print the Betti curves
 
-plot(edgeDensities, bettiCurves(:,1))
+figure
+plot(edgeDensities, bettiCurves(:,1), 'g--')
 hold on
-plot(edgeDensities, bettiCurves(:,2))
-plot(edgeDensities, bettiCurves(:,3))
+plot(edgeDensities, bettiCurves(:,2), 'r--')
+plot(edgeDensities, bettiCurves(:,3), 'b--')
 
 title("Betti curves for geometric matrix")
 legend("\beta_0","\beta_1","\beta_2")
